@@ -11,6 +11,17 @@ export interface Group {
   image?: string;
 }
 
+export interface UpcomingGroup {
+  id: string;
+  name: string;
+  location: string;
+  date: string;
+  minAge: number;
+  maxAge: number;
+  styles: string[];
+  spotsFree: number;
+}
+
 export interface SearchRequest {
   age: number;
   date?: string;

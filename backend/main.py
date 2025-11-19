@@ -34,6 +34,17 @@ class JoinResponse(BaseModel):
     success: bool
     whatsappLink: str
 
+
+class CreateGroupRequest(BaseModel):
+    name: str
+    location: str
+    date: str
+    min_age: int
+    max_age: int
+    styles: List[str]
+    spots_free: int
+    image: Optional[str] = ""
+
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
@@ -90,6 +101,33 @@ async def join_group(group_id: str, request: JoinRequest):
     group.spots_free -= 1
     
     return JoinResponse(success=True, whatsappLink=group.whatsapp_link)
+
+
+@app.post("/api/groups", response_model=Group)
+async def create_group(request: CreateGroupRequest):
+    """
+    Create a new mock group (for demo / local development).
+    This will append to the in-memory MOCK_GROUPS list and return the created group.
+    """
+    # simple id generation
+    new_id = str(len(MOCK_GROUPS) + 1)
+    whatsapp = "https://wa.me/1234567890?text=Nuova%20gita%20creata"
+
+    group = Group(
+        id=new_id,
+        name=request.name,
+        location=request.location,
+        date=request.date,
+        min_age=request.min_age,
+        max_age=request.max_age,
+        styles=request.styles,
+        spots_free=request.spots_free,
+        whatsapp_link=whatsapp,
+        image=request.image or "",
+    )
+
+    MOCK_GROUPS.append(group)
+    return group
 
 if __name__ == "__main__":
     import uvicorn

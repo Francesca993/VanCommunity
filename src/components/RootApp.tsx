@@ -1,20 +1,26 @@
 import { useState } from "react";
 import LandingPage from "./LandingPage";
 import AppFlow from "./AppFlow";
+import NewTripPage from "./NewTripPage";
+
+type View = "landing" | "appflow" | "newtrip";
 
 const RootApp = () => {
-  const [showAppFlow, setShowAppFlow] = useState(false);
-
-  const handleFindGroup = () => {
-    setShowAppFlow(true);
-  };
+  const [view, setView] = useState<View>("landing");
 
   return (
     <>
-      {!showAppFlow ? (
-        <LandingPage onFindGroup={handleFindGroup} />
-      ) : (
-        <AppFlow />
+      {view === "landing" && (
+        <LandingPage
+          onFindGroup={() => setView("appflow")}
+          onCreateTrip={() => setView("newtrip")}
+        />
+      )}
+
+      {view === "appflow" && <AppFlow />}
+
+      {view === "newtrip" && (
+        <NewTripPage onDone={() => setView("landing")} />
       )}
     </>
   );
